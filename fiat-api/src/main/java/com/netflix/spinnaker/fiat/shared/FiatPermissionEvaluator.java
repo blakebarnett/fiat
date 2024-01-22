@@ -244,14 +244,17 @@ public class FiatPermissionEvaluator implements PermissionEvaluator {
     }
 
     if (r.equals(ResourceType.APPLICATION) && StringUtils.isNotEmpty(resourceName.toString())) {
-      resourceName = resourceName.toString();
+      resourceName = resourceName.toString().toLowerCase();
     }
 
     UserPermission.View permission = getPermission(username);
-    boolean hasPermission = permissionContains(permission, resourceName.toString(), r, a);
+    boolean hasPermission =
+        permissionContains(permission, resourceName.toString().toLowerCase(), r, a);
 
     authorizationFailure.set(
-        hasPermission ? null : new AuthorizationFailure(a, r, resourceName.toString()));
+        hasPermission
+            ? null
+            : new AuthorizationFailure(a, r, resourceName.toString().toLowerCase()));
 
     if (permission != null && permission.isLegacyFallback() && hasPermission) {
       // log any access that was granted as part of a legacy fallback.
