@@ -149,6 +149,10 @@ public class FiatPermissionEvaluator implements PermissionEvaluator {
   @Override
   public boolean hasPermission(
       Authentication authentication, Object resource, Object authorization) {
+    log.warn("entering shorter hasPermission.");
+    log.warn("Authentication:" + authentication);
+    log.warn("resource class:" + resource.getClass().getCanonicalName());
+    log.warn("authorization class:" + authorization.getClass().getCanonicalName());
     if (!fiatStatus.isGrantedAuthoritiesEnabled()) {
       return false;
     }
@@ -220,6 +224,16 @@ public class FiatPermissionEvaluator implements PermissionEvaluator {
     if (!fiatStatus.isEnabled()) {
       return true;
     }
+    log.warn(
+        "entering hasPermission. Username:"
+            + username
+            + " resourceName Class:"
+            + resourceName.getClass().getCanonicalName()
+            + " resourceType:"
+            + resourceType
+            + " authorization class:"
+            + authorization.getClass().getCanonicalName());
+    log.warn("resourceName:" + resourceName + " authorization:" + authorization);
     if (resourceName == null || resourceType == null || authorization == null) {
       log.warn(
           "Permission denied because at least one of the required arguments was null. resourceName={}, resourceType={}, "
@@ -444,6 +458,8 @@ public class FiatPermissionEvaluator implements PermissionEvaluator {
 
       return authorized;
     } else if (resourceType.equals(ResourceType.APPLICATION)) {
+      log.warn(
+          "455 permission.getApplications: " + permission.getApplications().toArray().toString());
       boolean applicationHasPermissions =
           permission.getApplications().stream()
               .anyMatch(a -> a.getName().equalsIgnoreCase(resourceName));
